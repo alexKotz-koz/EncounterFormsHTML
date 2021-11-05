@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+{% for pt in patient %}
+{% if pt is not defined %}
+<a href="AddPt.html"></a>
+{% endif %}
+{% endfor %}
+<br>
+<div class="banner">
+    {% for pt in patient %}
+    <table>
+        <tr>
+            <td><div class="bannerName"> {{ pt.First }} </div></td>
+            <td><div class="bannerName"> {{ pt.Last }} </div></td>
+            <td> {{ pt.DateOfBirth }} </td>
+        </tr>
+        <tr>
+            <td> {{ pt.PrimaryProvider }} </td>
+            <td> {{ pt.Insurance }} </td>
+            <td> {{ pt.Phone }} </td>
+            <td>  {{ pt.id }} </td>
+        </tr>
+    </table> <br> <br>
+    {% endfor %}
+</div>
+<button id="addProblemToGlobal" name="addProblemToGlobal"><a href="/AddProblemGlobal">Add Problem to Global List</a></button>
+<form action="/DropTables" method="post">
+    <button type="submit" id="dropTables" name="dropTables">DropTables</button>
+
+</form>
+<form action="/DropProblems" method="post">
+    <button type="submit" id="dropProblems" name="dropProblems">DropProblems</button>
+</form>
+
+{% endblock %}

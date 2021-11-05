@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+
+{% block content %}
+
+
+<form action="/CPOE" method="POST">
+    <select name="selectPatient" id="selectPatient">
+    {% for pt in patients %}
+        <option id="patientSelected">
+            {{ pt.First }} {{ pt.Last }}
+        </option>
+    {% endfor %}
+</select>
+    <input type="submit" name="submit" value="Select Patient">
+
+</form>
+<button id="viewAllProtocols"><div class="viewAllProtocols">View All Protocols</div></button>
+<button id="assessmentsDue"><div class="assessmentsDue">Assessments Due</div></button>
+
+
+<button id="addProblem"><a href="/AddProblem/<id>"><div class="addProblem">Add Problem</div></a></button>
+<button id="problemList"><div class="problemList">Problem List</div></button>
+<h2><div class="assessment1Title">Assessment 1: </div></h2>
+<select name="problemDD">
+    {% for prob in patientProblems %}
+        <option id="problem">{{ prob.DxName }}</option>
+    {% endfor %}
+</select>
+
+{% endblock %}

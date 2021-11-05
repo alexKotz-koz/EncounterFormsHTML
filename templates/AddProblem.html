@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+   {% for problem in globalProblemList %}
+    <h2> {{ problem.DxName }} </h2>
+    {% endfor %}
+<form method="post" action="/AddProblem">
+    <label for="findPatient">Select Patient: </label>
+    <select name="findPatient"  id="findPatient">
+        {% for pt in patients %}
+            <option id="patient">{{ pt.First }} {{ pt.Last }} {{ pt.id }}</option>
+        {% endfor %}
+    </select>
+    <label for="selectProblem">Select Dx: </label>
+    <select name="selectProblem" id="selectProblem">
+        {% for problem in globalProblemList %}
+            <option id="problem">{{ problem.DxName }}</option>
+        {% endfor %}
+    </select>
+    <label for="onSetDate">Problem On Set Date: </label>
+    <input type="text" id="onSetDate" name="onSetDate">
+
+
+    <input name="addProblem" type="submit" value="Add Problem">
+
+</form>
+
+
+{% endblock %}

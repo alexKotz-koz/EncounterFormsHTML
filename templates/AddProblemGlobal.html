@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<form method="post" action="/AddProblemGlobal">
+    <label for="DxName">Enter Problem</label>
+    <input type="text" id="DxName" name="DxName">
+    <label for="DxCode">Enter ICD10 Code: </label>
+    <input type="text" id="DxCode" name="DxCode">
+    <label for="DxDescription">Enter Problem Description:</label>
+    <input type="text" id="DxDescription" name="DxDescription">
+    <input name="addProblem" type="submit" value="Add Problem">
+</form>
+
+
+{% endblock %}
