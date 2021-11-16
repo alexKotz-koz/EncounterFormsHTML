@@ -13,12 +13,49 @@
 }
 .assessment1Title{
     text-align: -webkit-left;
-}
-.viewAllProtocols{}
-.assesmentsDue{
-}
+}  .viewAllProtocols{}
+.assesmentsDue{}
 .problemList{}
+.initSelectPage{}
+.findPatient{}
+.findPatient {}
 
+.input,
+.textarea {
+  border: 3px solid black;
+  font-family: inherit;
+  font-size: inherit;
+
+}
+
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input {
+  position: absolute;
+  width: 30%;
+  left: 0;
+}
+
+
+.textarea {
+  display: block;
+  width: 30%;
+  overflow: hidden;
+  resize: both;
+  min-height: 80px;
+  line-height: 20px;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: "Placeholder still possible";
+  color: gray;
+}
+#findPatientH2{
+    text-align: left;
+    padding-left: 50px;
+}
+#findPatientPageButton{}
 #navBar1 ul{
   list-style-type: none;
   margin: 0;

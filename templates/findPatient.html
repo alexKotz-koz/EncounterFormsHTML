@@ -2,8 +2,20 @@
 {% block title %} Home {% endblock %}
 
 {% block content %}
-<select name="findPatientDD">
-    <option value=""></optionvale>
-</select>
+<h2><div class="initSelectPage" id="findPatientH2">Find Patient</div></h2><br>
+<h4><div class="initSelectPage" id="findPatientH4">Search for Patient:</div></h4>
+
+<form method="post" action="/findPatient">
+    <label for="searchForPatientPID">Search by PID</label>
+    <input  type="radio" name="searchForPatient" id="searchForPatientPID" value="pid"><br>
+
+    <label for="searchForPatientName">Search by Name</label>
+    <input type="radio" name="searchForPatient" id="searchForPatientName" value="name">
+
+    <label for="searchFor">Search: </label>
+    <input type="text" name="searchFor" id="searchFor">
+
+    <a ><input type="submit" value="Search"></a>
+</form>
 
 {% endblock %}

@@ -5,28 +5,56 @@
 {% block content %}
 
 
-<form action="/CPOE" method="POST">
-    <select name="selectPatient" id="selectPatient">
-    {% for pt in patients %}
-        <option id="patientSelected">
-            {{ pt.First }} {{ pt.Last }}
-        </option>
-    {% endfor %}
-</select>
-    <input type="submit" name="submit" value="Select Patient">
 
-</form>
+<h2>{{ patient.First }} {{ patient.Last }}</h2>
+
 <button id="viewAllProtocols"><div class="viewAllProtocols">View All Protocols</div></button>
 <button id="assessmentsDue"><div class="assessmentsDue">Assessments Due</div></button>
 
 
-<button id="addProblem"><a href="/AddProblem/<id>"><div class="addProblem">Add Problem</div></a></button>
+<button id="addProblem"><a href="/AddProblem/{{ pid }}"><div class="addProblem">Add Problem</div></a></button>
 <button id="problemList"><div class="problemList">Problem List</div></button>
-<h2><div class="assessment1Title">Assessment 1: </div></h2>
-<select name="problemDD">
-    {% for prob in patientProblems %}
-        <option id="problem">{{ prob.DxName }}</option>
-    {% endfor %}
-</select>
+
+<form name="a&P1" method="post" action="/CPOE/{{ pid }}">
+    <h2><div class="assessment1Title">Assessment 1: </div></h2>
+    <select name="problemDD">
+        {% for prob in patientProblems %}
+            <option id="problem1">{{ prob.DxName }}</option>
+        {% endfor %}
+    </select>
+    <textarea class="textarea" name="assessment1" id="assessment1"></textarea>
+    <input type="submit" name="commitA&P1" value="Commit Assessment 1">
+</form>
+
+<form name="a&P2" method="post" action="/CPOE/{{ pid }}">
+    <h2><div class="assessment2Title">Assessment 2: </div></h2>
+    <select name="problemDD">
+        {% for prob in patientProblems %}
+            <option id="problem2">{{ prob.DxName }}</option>
+        {% endfor %}
+    </select>
+    <textarea class="textarea" name="assessment1" id="assessment2"></textarea>
+    <input type="submit" name="commitA&P2" value="Commit Assessment">
+</form>
+
+<!-- For Expanded Text Areas -->
+<script>
+    let el = document.querySelector(".input-wrap .input");
+    let widthMachine = document.querySelector(".input-wrap .width-machine");
+    el.addEventListener("keyup", () => {
+        widthMachine.innerHTML = el.value;
+    });
+    // Dealing with Textarea Height
+    function calcHeight(value) {
+        let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+        // min-height + lines x line-height + padding + border
+        let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
+        return newHeight;
+    }
+    let textarea = document.querySelector(".resize-ta");
+    textarea.addEventListener("keyup", () => {
+        textarea.style.height = calcHeight(textarea.value) + "px";// Dealing with Input width
+    });
+    </script>
 
 {% endblock %}
