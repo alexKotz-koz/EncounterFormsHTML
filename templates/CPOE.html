@@ -17,9 +17,9 @@
 
 <form name="a&P1" method="post" action="/CPOE/{{ pid }}">
     <h2><div class="assessment1Title">Assessment 1: </div></h2>
-    <select name="problemDD">
+    <select name="problemDD1">
         {% for prob in patientProblems %}
-            <option id="problem1">{{ prob.DxName }}</option>
+            <option name="problem1" id="problem1">{{ prob.DxName }}</option>
         {% endfor %}
     </select>
     <textarea class="textarea" name="assessment1" id="assessment1"></textarea>
@@ -28,7 +28,7 @@
 
 <form name="a&P2" method="post" action="/CPOE/{{ pid }}">
     <h2><div class="assessment2Title">Assessment 2: </div></h2>
-    <select name="problemDD">
+    <select name="problemDD2">
         {% for prob in patientProblems %}
             <option id="problem2">{{ prob.DxName }}</option>
         {% endfor %}

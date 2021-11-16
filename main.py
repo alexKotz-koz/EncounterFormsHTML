@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 json = FlaskJSON(app)
 json.init_app(app)
-
+today = datetime.date.today()
 
 class Patients(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,10 +34,8 @@ class PatientProblems(db.Model):
 class PatientAssessments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     DxName = db.Column(db.String(25))
-    Assessment1 = db.Column(db.String(500))
-    Assessment1Date = db.Column(db.String(10))
-    Assessment2 = db.Column(db.String(500))
-    Assessment2Date = db.Column(db.String(10))
+    Assessment = db.Column(db.String(500))
+    AssessmentDate = db.Column(db.String(10))
     PID = db.Column(db.Integer, db.ForeignKey('patients.id'))
 
 
@@ -186,15 +184,24 @@ def CPOE(pid):
     patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.filter_by(PID=pid)
     patientAssessments = PatientAssessments.query.filter_by(PID=pid).first()
-    today = datetime.date.today()
+
     if request.method == 'POST':
         if request.form.get('commitA&P1'):
+            problem1 = request.form['problemDD1']
             assessment1 = request.form['assessment1']
-            assessment1Add = PatientAssessments(Assessment1=assessment1, Assessment1Date=today)
+            assessment1Add = PatientAssessments(DxName=problem1, Assessment=assessment1, AssessmentDate=str(today),
+                                                PID=pid)
+            db.session.add(assessment1Add)
+            db.session.commit()
             return redirect('/home/' + str(pid))
 
         elif request.form.get('commitA&P2'):
+            problem2 = request.form['problemDD2']
             assessment2 = request.form['assessment2']
+            assessment2Add = PatientAssessments(DxName=problem2, Assessment=assessment2, AssessmentDate=str(today),
+                                                PID=pid)
+            db.session.add(assessment2Add)
+            db.session.commit()
             return redirect('/home/' + str(pid))
     return render_template('CPOE.html', patient=patient, patientProblems=patientProblems, pid=pid)
 
