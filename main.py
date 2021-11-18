@@ -11,6 +11,7 @@ json = FlaskJSON(app)
 json.init_app(app)
 today = datetime.date.today()
 
+
 class Patients(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     First = db.Column(db.String(40))
@@ -195,7 +196,7 @@ def CPOE(pid):
             db.session.commit()
             return redirect('/home/' + str(pid))
 
-        elif request.form.get('commitA&P2'):
+        if request.form.get('commitA&P2'):
             problem2 = request.form['problemDD2']
             assessment2 = request.form['assessment2']
             assessment2Add = PatientAssessments(DxName=problem2, Assessment=assessment2, AssessmentDate=str(today),
