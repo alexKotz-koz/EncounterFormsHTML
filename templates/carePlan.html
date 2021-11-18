@@ -23,12 +23,26 @@
               <option name="problem" id="problem">{{ prob.DxName }}</option>
           {% endfor %}
       </select><br><br><br>
+
       <label for="newCarePlanProviderGoals" id="newCarePlanProviderGoalsLabel">Provider Goal(s):</label>
       <textarea name="providerGoals" id="newCarePlanProviderGoals"></textarea>
 
+      <label for="providerGoalMet" id="providerGoalMetLabel">Goal Met:</label>
+      <input type="checkbox" name="providerGoalMet" id="providerGoalMet">
+
+      <label for="providerActions" id="providerActionLabel">Provider Action(s):</label>
+      <textarea name="providerActions" id="providerActions"></textarea>
+
       <br><br><br>
+
       <label for="newCarePlanPatientGoals" id="newCarePlanPatientGoalsLabel">Patient Goal(s):</label>
       <textarea name="providerGoals" id="newCarePlanPatientGoals"></textarea>
+
+      <label for="patientGoalMet" id="patientGoalMetLabel">Goal Met:</label>
+      <input type="checkbox" name="patientGoalMet" id="patientGoalMet">
+
+      <label for="patientActions" id="patientActionLabel">Patient Action(s):</label>
+      <textarea name="patientActions" id="patientActions"></textarea>
 
       <!--<ul id="providerGoalList">
          <input type="text" name="providerGoals" id="newCarePlanProviderGoals">
@@ -37,9 +51,9 @@
 
 </div>
 <div id="editCarePlan" style="display: none">
-    <label for="providerGoalMet">Provider Goal Met:</label>
+    <!--<label for="providerGoalMet">Provider Goal Met:</label>
     <input type="checkbox" name="providerGoalMet" id="providerGoalMet">
-</div>
+</div>-->
 <div id="deleteCarePlan" style="display: none"></div>
 
 

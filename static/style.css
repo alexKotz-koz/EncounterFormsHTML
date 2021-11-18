@@ -64,8 +64,41 @@
 #newCarePlanProviderGoalsLabel{
     vertical-align: top;
 }
+#newCarePlanProviderGoals{
+}
 #newCarePlanPatientGoalsLabel{
     vertical-align: top;
+}
+#newCarePlanPatientGoals{
+}
+#providerGoalMetLabel{
+    vertical-align: top;
+    padding-left: 25px;
+}
+#providerGoalMet{
+    vertical-align: top;
+}
+#patientGoalMetLabel{
+    vertical-align: top;
+    padding-left: 25px;
+}
+#patientGoalMet{
+    vertical-align: top;
+}
+#providerActionLabel{
+    vertical-align: top;
+    padding-left: 50px;
+}
+#providerActions{
+    padding-left: 50px;
+}
+#patientActionLabel{
+    vertical-align: top;
+    padding-left: 50px;
+}
+#patientActions{
+    vertical-align: top;
+    padding-left: 50px;
 }
 #findPatientH2{
     text-align: left;

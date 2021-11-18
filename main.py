@@ -22,6 +22,7 @@ class Patients(db.Model):
     PrimaryProvider = db.Column(db.String(50))
     Phone = db.Column(db.String(50))
 
+
 class Employees(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Role = db.Column(db.String(50))
@@ -34,6 +35,7 @@ class Employees(db.Model):
     Medicare = db.Column(db.String(80), nullable=True)
     DEA = db.Column(db.String(80), nullable=True)
     UPIN = db.Column(db.String(80), nullable=True)
+
 
 class PatientProblems(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -62,7 +64,8 @@ class PatientCarePlan(db.Model):
     ProviderGoalMet = db.Column(db.BOOLEAN)
     PatientGoalMet = db.Column(db.BOOLEAN)
     PID = db.Column(db.Integer, db.ForeignKey('patients.id'))
-    ProviderId = db.Column(db.Integer, db.ForeignKey('providers.id'))
+    ProviderId = db.Column(db.Integer, db.ForeignKey('employees.id'))
+
 
 class GlobalProblemList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -170,6 +173,11 @@ def init():
 
     return render_template('init.html', patient=patient)
 
+@app.route('/base', methods=['GET', 'POST'])
+def base(pid):
+
+    render_template('home.html')
+
 
 @app.route('/findPatient', methods=['GET', 'POST'])
 def findPatient():
@@ -193,7 +201,6 @@ def findPatient():
 @app.route('/home/<pid>', methods=['GET', 'POST'])
 def home(pid):
     patient = Patients.query.filter_by(id=pid)
-
 
     return render_template('home.html', patient=patient)
 
@@ -232,11 +239,14 @@ def CPOE(pid):
     return render_template('CPOE.html', patient=patient, patientProblems=patientProblems, pid=pid)
 
 
-@app.route('/CarePlan/<pid>', methods=['GET','POST'])
+@app.route('/CarePlan/<pid>', methods=['GET', 'POST'])
 def CarePlan(pid):
     patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.filter_by(PID=pid)
-    return render_template('carePlan.html', patient=patient, patientProblems=patientProblems, pid=pid)
+    patientCarePlan = PatientCarePlan.query.filter_by(PID=pid)
+
+    return render_template('carePlan.html', patient=patient, patientProblems=patientProblems,
+                           patientCarePlan=patientCarePlan, pid=pid)
 
 
 @app.route('/HPI')
