@@ -3,7 +3,83 @@
 
 {% block content %}
 
+<h1><div id="carePlanTitle">Care Plan</div></h1>
+
+<p><div id="carePlanTypeLabel">Care Plan Type:</div>
+
+<div id="carePlanTypeSelect">
+    <input type="radio" onclick="typeCheck()" id="carePlanTypeNewCarePlan" name="carePlanType">
+    <label for="carePlanTypeNewCarePlan">New Care Plan</label><br>
+    <input type="radio" onclick="typeCheck()" id="carePlanTypeEditExistingCarePlan" name="carePlanType">
+    <label for="carePlanTypeEditExistingCarePlan">Edit Existing Care Plan</label><br>
+    <input type="radio" onclick="typeCheck()" id="carePlanTypeDeleteCarePlan" name="carePlanType">
+    <label for="carePlanTypeDeleteCarePlan">Delete Existing Care Plan</label><br>
+</div> <br><br>
+<div id="newCarePlan" style="display: none">
+  <form name="newCarePlanProbDD" method="post" action="/carePlan/{{ pid }}">
+      <label for="carePlanProblemDD" id="carePlanProblemDD">Select Care Plan Dx:</label>
+      <select name="carePlanProblemDD">
+          {% for prob in patientProblems %}
+              <option name="problem" id="problem">{{ prob.DxName }}</option>
+          {% endfor %}
+      </select><br><br><br>
+      <label for="newCarePlanProviderGoals" id="newCarePlanProviderGoalsLabel">Provider Goal(s):</label>
+      <textarea name="providerGoals" id="newCarePlanProviderGoals"></textarea>
+
+      <br><br><br>
+      <label for="newCarePlanPatientGoals" id="newCarePlanPatientGoalsLabel">Patient Goal(s):</label>
+      <textarea name="providerGoals" id="newCarePlanPatientGoals"></textarea>
+
+      <!--<ul id="providerGoalList">
+         <input type="text" name="providerGoals" id="newCarePlanProviderGoals">
+      </ul>  <input type="button" id="addProviderGoal" value="Add New Goal" onclick="addProviderGoal()">-->
+    </form>
+
+</div>
+<div id="editCarePlan" style="display: none">
+    <label for="providerGoalMet">Provider Goal Met:</label>
+    <input type="checkbox" name="providerGoalMet" id="providerGoalMet">
+</div>
+<div id="deleteCarePlan" style="display: none"></div>
 
 
+
+<script type="text/javascript">
+var newCarePlanDiv = document.getElementById('newCarePlan');
+var editCarePlanDiv = document.getElementById('editCarePlan');
+var deleteCarePlanDiv = document.getElementById('deleteCarePlan');
+function typeCheck() {
+    if (document.getElementById('carePlanTypeNewCarePlan').checked) {
+        newCarePlanDiv.style.display = 'block';
+        editCarePlanDiv.style.display = 'none';
+        deleteCarePlanDiv.style.display = 'none';
+    }
+    else if (document.getElementById('carePlanTypeEditExistingCarePlan').checked){
+        editCarePlanDiv.style.display = 'block';
+        newCarePlanDiv.style.display = 'none';
+        deleteCarePlanDiv.style.display = 'none';
+    }
+    else if(document.getElementById('carePlanTypeDeleteCarePlan').checked){
+        deleteCarePlanDiv.style.display = 'block';
+        newCarePlanDiv.style.display = 'none';
+        deleteCarePlanDiv.style.display = 'none';
+    }
+}
+
+function addProviderGoal() {
+    var li = document.createElement("LI");
+    var ta = document.createElement("INPUT")
+    var br = document.createElement("BR")
+    var input = document.getElementById("addProviderGoal");
+
+    li.innerHTML = input.value;
+    input.value = "Add New Goal";
+    document.getElementById("providerGoalList").appendChild(ta);
+    document.getElementById("providerGoalList").appendChild(br);
+
+}
+
+
+</script>
 
 {% endblock %}

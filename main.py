@@ -22,6 +22,18 @@ class Patients(db.Model):
     PrimaryProvider = db.Column(db.String(50))
     Phone = db.Column(db.String(50))
 
+class Employees(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    Role = db.Column(db.String(50))
+    First = db.Column(db.String(50))
+    Last = db.Column(db.String(50))
+    DateOfBirth = db.Column(db.String(10))
+    NPI = db.Column(db.Integer, nullable=True)
+    StLicense = db.Column(db.String(80), nullable=True)
+    Medicaid = db.Column(db.Integer, nullable=True)
+    Medicare = db.Column(db.String(80), nullable=True)
+    DEA = db.Column(db.String(80), nullable=True)
+    UPIN = db.Column(db.String(80), nullable=True)
 
 class PatientProblems(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +51,18 @@ class PatientAssessments(db.Model):
     AssessmentDate = db.Column(db.String(10))
     PID = db.Column(db.Integer, db.ForeignKey('patients.id'))
 
+
+class PatientCarePlan(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    DxName = db.Column(db.String(25))
+    ProviderGoal = db.Column(db.String(500))
+    PatientGoal = db.Column(db.String(500))
+    ProviderAction = db.Column(db.String(500))
+    PatientAction = db.Column(db.String(500))
+    ProviderGoalMet = db.Column(db.BOOLEAN)
+    PatientGoalMet = db.Column(db.BOOLEAN)
+    PID = db.Column(db.Integer, db.ForeignKey('patients.id'))
+    ProviderId = db.Column(db.Integer, db.ForeignKey('providers.id'))
 
 class GlobalProblemList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -170,6 +194,7 @@ def findPatient():
 def home(pid):
     patient = Patients.query.filter_by(id=pid)
 
+
     return render_template('home.html', patient=patient)
 
 
@@ -207,9 +232,11 @@ def CPOE(pid):
     return render_template('CPOE.html', patient=patient, patientProblems=patientProblems, pid=pid)
 
 
-@app.route('/CarePlan')
-def CarePlan():
-    return render_template('carePlan.html')
+@app.route('/CarePlan/<pid>', methods=['GET','POST'])
+def CarePlan(pid):
+    patient = Patients.query.filter_by(id=pid)
+    patientProblems = PatientProblems.query.filter_by(PID=pid)
+    return render_template('carePlan.html', patient=patient, patientProblems=patientProblems, pid=pid)
 
 
 @app.route('/HPI')

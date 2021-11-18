@@ -51,6 +51,22 @@
   content: "Placeholder still possible";
   color: gray;
 }
+#carePlanTypeSelect{
+    padding-left: 50px;
+}
+#carePlanTypeLabel{
+    padding-left: 25px;
+}
+#newCarePlan{
+    text-align: left;
+    padding-left: 75px;
+}
+#newCarePlanProviderGoalsLabel{
+    vertical-align: top;
+}
+#newCarePlanPatientGoalsLabel{
+    vertical-align: top;
+}
 #findPatientH2{
     text-align: left;
     padding-left: 50px;
