@@ -137,11 +137,12 @@ def AddProblem(pid):
         if patient is not None:
             dxName = request.form['selectProblem']
             globalProblemListDxName = GlobalProblemList.query.filter_by(DxName=dxName).first()
-
+            globalProblemListDxCode = GlobalProblemList.query.filter_by(DxName=dxName).first()
+            globalProblemListDxDescription = GlobalProblemList.query.filter_by(DxName=dxName).first()
             if globalProblemListDxName.DxName == dxName:
                 problemToAdd = PatientProblems(DxName=globalProblemListDxName.DxName,
-                                               DxCode=str(GlobalProblemList.DxCode),
-                                               DxDescription=str(GlobalProblemList.DxDescription),
+                                               DxCode=globalProblemListDxCode.DxCode,
+                                               DxDescription=globalProblemListDxDescription.DxDescription,
                                                DxOnSetDate=onSetDate,
                                                PID=pid)
                 db.session.add(problemToAdd)
@@ -208,7 +209,7 @@ def home(pid):
 @app.route('/ChartSummary/<pid>', methods=['POST', 'GET'])
 def ChartSummary(pid):
     patient = Patients.query.filter_by(id=pid)
-    patientProblems = PatientProblems.query.all()
+    patientProblems = PatientProblems.query.filter_by(PID=pid)
     return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems)
 
 

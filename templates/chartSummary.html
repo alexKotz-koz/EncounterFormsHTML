@@ -2,7 +2,7 @@
 {% block title %} Chart Summary {% endblock %}
 
 {% block content %}
-<div class="banner">
+
     {% for pt in patient %}
     <div id="navBar1">
         <nav>
@@ -23,7 +23,7 @@
     </div>
 
 
-
+<div class="banner">
 <table>
         <tr>
             <td><div class="bannerName"> {{ pt.First }} </div></td>
@@ -38,9 +38,21 @@
 
         </tr>
     </table> <br> <br>
-
-{% endfor %}
 </div>
+
+<table id="chartSummaryProblemsTable">
+    {% for prob in patientProblems %}
+    <tr>
+        <td>Problem: {{ prob.DxName }}</td>
+        <td>ICD10 Code: {{ prob.DxCode }}</td>
+        <td>Problem Onset Date: {{ prob.DxOnSetDate }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<button id="addProblem"><a href="/AddProblem/{{ pt.id }}"><div class="addProblem">Add Problem</div></a></button>
+{% endfor %}
+
+
 
 
 {% endblock %}
