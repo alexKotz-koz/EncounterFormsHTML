@@ -205,11 +205,11 @@ def home(pid):
     return render_template('home.html', patient=patient)
 
 
-@app.route('/ChartSummary', methods=['POST', 'GET'])
-def ChartSummary():
-    patients = Patients.query.all()
+@app.route('/ChartSummary/<pid>', methods=['POST', 'GET'])
+def ChartSummary(pid):
+    patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.all()
-    return render_template('chartSummary.html', patients=patients, patientProblems=patientProblems)
+    return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems)
 
 
 @app.route('/CPOE/<pid>', methods=['POST', 'GET'])

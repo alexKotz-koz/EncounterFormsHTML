@@ -2,6 +2,9 @@
 {% block title %} Home {% endblock %}
 {% block content %}
 
+
+
+
 {% for pt in patient %}
 {% if pt is not defined %}
 <a href="addPt.html"></a>
@@ -10,6 +13,24 @@
 <br>
 <div class="banner">
     {% for pt in patient %}
+    <div id="navBar1">
+        <nav>
+            <ul>
+                <li> <a href="/home/{{ pt.id }}">Home</a></li>
+                <li> <a href="/ChartSummary/{{ pt.id }}">Chart Summary</a></li>
+                <li> <a href="/CarePlan/{{ pt.id }}">Care Plan</a> </li>
+                <li> <a href="/AddPt">Add Patient</a></li>
+            <!--<li> <a href="/CPOE">CPOE A&P</a> </li>-->
+                <li> <a href="/HPI">HPI-ROS</a></li>
+                <li> <a href="/PtInstructions">Patient Instructions</a></li>
+                <li> <a href="/VS">Vital Signs</a></li>
+                <li> <a href="/Immunizations">Immunizations</a></li>
+                <li> <a href="/PMHPSH">PMH/PSH</a></li>
+                <li> <a href="/findPatient">Find Patient</a></li>
+            </ul>
+        </nav>
+    </div>
+
     <table>
         <tr>
             <td><div class="bannerName"> {{ pt.First }} </div></td>
