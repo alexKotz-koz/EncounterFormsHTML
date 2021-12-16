@@ -1,3 +1,6 @@
+from math import floor
+
+import requests
 from flask import Flask, request, render_template, redirect, flash, url_for, send_file, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_json import FlaskJSON, json_response
@@ -17,7 +20,7 @@ class Patients(db.Model):
     First = db.Column(db.String(40))
     Last = db.Column(db.String(100))
     DateOfBirth = db.Column(db.String(90))
-    Age = db.Column(db.Integer)
+    Age = db.Column(db.String(10))
     Insurance = db.Column(db.String(150))
     PrimaryProvider = db.Column(db.String(50))
     Phone = db.Column(db.String(50))
@@ -71,14 +74,12 @@ class GlobalProblemList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     DxName = db.Column(db.String(25))
     DxCode = db.Column(db.String(10))
-    DxDescription = db.Column(db.String(80))
 
 
-def addGlobalProblem(DxName, DxCode, DxDescription):
+def addGlobalProblem(DxName, DxCode):
     DxName = DxName
     DxCode = DxCode
-    DxDescription = DxDescription
-    db.session.add(GlobalProblemList(DxName=DxName, DxCode=DxCode, DxDescription=DxDescription))
+    db.session.add(GlobalProblemList(DxName=DxName, DxCode=DxCode))
     db.session.commit()
 
 
@@ -112,8 +113,19 @@ def AddPt():
     if request.method == 'POST':
         first = request.form['first']
         last = request.form['last']
-        dateOfBirth = request.form['dateOfBirth']
-        age = request.form['age']
+
+        dt_string = request.form.get('dateOfBirth')
+        dateOfBirth = dt_string
+        formatT = "%Y-%m-%d"
+        dt_object = datetime.datetime.strptime(dt_string, formatT)
+        currentDate_obj = datetime.datetime.today()
+        age = currentDate_obj - dt_object
+        age = str(age)
+        age = age.split(" ")
+        age = floor(int(age[0])/365)
+        print(age)
+        age = str(age)
+
         insurance = request.form['insurance']
         primaryProvider = request.form['primaryProvider']
         phone = request.form['phone']
@@ -138,11 +150,9 @@ def AddProblem(pid):
             dxName = request.form['selectProblem']
             globalProblemListDxName = GlobalProblemList.query.filter_by(DxName=dxName).first()
             globalProblemListDxCode = GlobalProblemList.query.filter_by(DxName=dxName).first()
-            globalProblemListDxDescription = GlobalProblemList.query.filter_by(DxName=dxName).first()
             if globalProblemListDxName.DxName == dxName:
                 problemToAdd = PatientProblems(DxName=globalProblemListDxName.DxName,
                                                DxCode=globalProblemListDxCode.DxCode,
-                                               DxDescription=globalProblemListDxDescription.DxDescription,
                                                DxOnSetDate=onSetDate,
                                                PID=pid)
                 db.session.add(problemToAdd)
@@ -156,11 +166,18 @@ def AddProblem(pid):
 @app.route('/AddProblemGlobal', methods=['GET', 'POST'])
 def AddProblemToGlobalList():
     if request.method == 'POST':
-        DxName = request.form['DxName']
-        DxCode = request.form['DxCode']
-        DxDescription = request.form['DxDescription']
-        addGlobalProblem(DxName, DxCode, DxDescription)
-        return redirect('/')
+        DxCode = request.form['icd10Code']
+
+        nameJsonObject = requests.get(
+            'https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=' + DxCode)
+        nameJsonObjects = nameJsonObject.json()
+        textNameJson = nameJsonObjects[3]
+        nameOfDx = textNameJson[0]
+
+        DxName = nameOfDx[1]
+
+        addGlobalProblem(DxName, DxCode)
+        return redirect('/findPatient')
     return render_template('addProblemGlobal.html', GlobalProblemList=GlobalProblemList)
 
 
@@ -174,9 +191,9 @@ def init():
 
     return render_template('init.html', patient=patient)
 
+
 @app.route('/base', methods=['GET', 'POST'])
 def base(pid):
-
     render_template('home.html')
 
 
@@ -208,6 +225,8 @@ def home(pid):
 
 @app.route('/ChartSummary/<pid>', methods=['POST', 'GET'])
 def ChartSummary(pid):
+    if pid == '':
+        return redirect('/findPatient')
     patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.filter_by(PID=pid)
     return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems)

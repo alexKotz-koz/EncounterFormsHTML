@@ -1,9 +1,13 @@
 body{
-    background-image: image('/static/logo.png');
+    margin-top: 3%;
+    background-image: url('/static/logo.png');
+    background-repeat: no-repeat;
+    background-size: auto;
 }
 .banner{
     outline-style: auto;
     outline-color: #333333;
+    align-items: center;
 }
 .banner td{
     padding-left: 5px;
@@ -48,10 +52,10 @@ body{
   resize: both;
   min-height: 80px;
   line-height: 20px;
+    background: white;
 }
 
 .textarea[contenteditable]:empty::before {
-  content: "Placeholder still possible";
   color: gray;
 }
 #carePlanTypeSelect{
@@ -114,20 +118,21 @@ body{
   padding: 0;
   overflow: hidden;
   background-color: #333;
+  alignment: top;
 }
 #chartSummaryProblemsTable{
     table-border-color-dark: black;
 }
-
-
-
-
-
-
-
-
+#navBar1 {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    left: 0px;
+    margin-bottom: 100px;
+}
 #navBar1 li {
   float: left;
+    align-items: center;
 }
 
 #navBar1 li a {
@@ -141,4 +146,30 @@ body{
 /* Change the link color to #111 (black) on hover */
 #navBar1 li a:hover {
   background-color: #111;
+}
+
+/*Text Editor*/
+
+.toolbar
+{
+    border:solid 1px #ddd;
+    background:#f4f4f4;
+    padding: 5px;
+    border-radius:3px;
+    width: 30%;
+    display: block;
+    overflow: hidden;
+    resize: both;
+    min-height: 15px;
+    line-height: 20px;
+}
+
+.toolbar > span
+{
+    cursor:pointer;
+}
+
+.toolbar > span:hover
+{
+    text-decoration:underline;
 }

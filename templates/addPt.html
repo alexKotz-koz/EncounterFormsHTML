@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 
 
 {% block title %} Home {% endblock %}
@@ -13,16 +13,19 @@
     <input name="last" id="last" type="text"><br>
 
     <label for="dateOfBirth">Date of Birth: </label>
-    <input name="dateOfBirth" id="dateOfBirth" type="text"><br>
-
-    <label for="age">Age: </label>
-    <input name="age" id="age" type="number"><br>
+    <input name="dateOfBirth" id="dateOfBirth" type="date"><br>
 
     <label for="insurance">Insurance: </label>
     <input name="insurance" id="insurance" type="text"><br>
 
     <label for="primaryProvider">Primary Provider: </label>
-    <input name="primaryProvider" id="primaryProvider" type="text"><br>
+    <select name="primaryProvider" id="primaryProvider">
+        <option>Kotz</option>
+        <option>Robbiano</option>
+        <option>Burke</option>
+        <option>Rollins</option>
+    </select>
+
 
     <label for="phone">Enter Phone Number: </label>
     <input name="phone" id="phone" type="tel"><br>

@@ -1,17 +1,21 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 {% block title %} Home {% endblock %}
 
 {% block content %}
 
 <form method="post" action="/AddProblemGlobal">
-    <label for="DxName">Enter Problem</label>
-    <input type="text" id="DxName" name="DxName">
-    <label for="DxCode">Enter ICD10 Code: </label>
-    <input type="text" id="DxCode" name="DxCode">
-    <label for="DxDescription">Enter Problem Description:</label>
-    <input type="text" id="DxDescription" name="DxDescription">
+
+    <link href='https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.css' rel="stylesheet">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src='https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.js'></script>
+
+    <input type="text" id="icd10" name=icd10Code placeholder="Code or name">
+    <script>
+        new Def.Autocompleter.Search('icd10', 'https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name',
+        {tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name']});
+
+    </script>
     <input name="addProblem" type="submit" value="Add Problem">
 </form>
-
 
 {% endblock %}
