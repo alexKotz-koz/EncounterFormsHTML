@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %} Chart Summary {% endblock %}
+
+{% block content %}
+<h1 id="Title"></h1>
+<p>FHIR Lookup Patient Name</p>
+<form method="post" action="/findPatient">
+    <input type="text" name="ptFirstName" id="ptFirstName">
+    <input type="button" onclick="getPt()" name="submit" id="submit" value="Search">
+</form>
+<form method="get" action="/findPatient">
+   <p id="JSON"></p>
+<script>
+    function getPt(){
+        var ptName = document.getElementById("ptFirstName").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            if (this.readyState === 4 && this.status === 200){
+                var object = this.responseText;
+                var jsObject = JSON.parse(object)
+                console.log(jsObject);
+
+
+
+                var patientName = jsObject.name;
+
+
+                document.getElementById("JSON").innerHTML = patientName;
+
+
+
+
+            }
+            else if (this.readyState===4 && this.status !== 200){
+                document.getElementById("Title").innerHTML = "Bad Request";
+            }
+        };
+        xhttp.open("GET", "http://fhir.hl7fundamentals.org/r4/Patient?name="+ptName+"&_format=json", true);
+        xhttp.send();
+    }
+</script>
+</form>
+
+
+
+{% endblock %}

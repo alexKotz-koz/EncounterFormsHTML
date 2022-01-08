@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %} Chart Summary {% endblock %}
+
+{% block content %}
+
+    {% for pt in patient %}
+<div class="banner" >
+<table id="bannerTable">
+        <tr>
+            <th colspan="2.5"><div class="bannerName"> {{ pt.First }} </div></th>
+            <th colspan="2.5"><div class="bannerName"> {{ pt.Last }} </div></th>
+
+        </tr>
+        <tr>
+            <td> Primary Provider: {{ pt.PrimaryProvider }} </td>
+            <td> Primary Insurance: {{ pt.Insurance }} </td>
+            <td> Primary Phone: {{ pt.Phone }} </td>
+            <td> Patient ID: {{ pt.id }} </td>
+            <td id="dateOfBirth"> Patient Date of Birth:{{ pt.DateOfBirth }} </td>
+        </tr>
+    </table> <br> <br>
+</div>
+
+<div class="chartSummaryProblemsTable">
+    <table class="chartSummaryProblemsTable">
+    <tr>
+        <th id="chartSummaryProblemsTableHeader" colspan="3">Problems</th>
+    </tr>
+    <tr>
+        <td class="chartSummaryProblemsTableHeaders">Problem</td>
+        <td class="chartSummaryProblemsTableHeaders">ICD10-Code</td>
+        <td class="chartSummaryProblemsTableHeaders">Problem Onset Date</td>
+    </tr>
+    {% for prob in patientProblems %}
+    <tr>
+        <td class="chartSummaryProblemsTableTd">{{ prob.DxName }}</td>
+        <td class="chartSummaryProblemsTableTd">{{ prob.DxCode }}</td>
+        <td class="chartSummaryProblemsTableTd">{{ prob.DxOnSetDate }}</td>
+        <td class="chartSummaryProblemsTableTd"><a href="/DeleteProblem/{{ prob.id }}/{{ prob.PID }}">Delete Problem</a></td>
+    </tr>
+    {% endfor %}
+</table></div>
+<form action="/ChartSummary/{{ pt.id }}" method='POST'>
+    <input type="submit" name="Submit" value="Add Problem">
+</form>
+<br>
+<form action="/ChartSummary/{{ pt.id }}/{{ dxDDCode }}" method='POST'>
+
+    <label> Choose Dx:
+            <select id="DxDD" name="DxDD">
+               {% for aP in patientAssessments %}
+               <option>{{ aP.DxName }} | {{ aP.AssessmentDate }}</option>
+               {% endfor %}
+            </select>
+        </label>
+    <input type="submit" value="findDx" name="Submit">
+</form>
+<div class="chartSummaryAssessmentsTable">
+    <table class="chartSummaryAssessmentsTable">
+        <tr>
+            <th class="chartSummaryAssessmentsTableHeader" colspan="3">Assessments</th>
+        </tr>
+        <tr>
+        <td class="chartSummaryAssessmentsTableHeaders">Diagnosis</td>
+        <td class="chartSummaryAssessmentsTableHeaders">Assessment</td>
+        <td class="chartSummaryAssessmentsTableHeaders">Assessment Date</td>
+        </tr>
+  {% for aP in patientAssessments %}
+
+
+
+
+    <tr>
+        <td class="chartSummaryAssessmentsTableTd">{{ aP.DxName }}</td>
+        <td class="chartSummaryAssessmentsTableTd">{{ aP.Assessment }}</td>
+        <td class="chartSummaryAssessmentsTableTd">{{ aP.AssessmentDate }}</td>
+    </tr>
+
+
+
+
+    </table></div>
+
+     {% endfor %}
+
+
+
+
+{% endfor %}
+
+
+
+
+{% endblock %}

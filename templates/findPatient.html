@@ -1,0 +1,59 @@
+{% extends "base2.html" %}
+{% block title %} Home {% endblock %}
+
+
+
+{% block content %}
+<h2><div class="initSelectPage" id="findPatientH2">Find Patient</div></h2><br>
+<h4><div class="initSelectPage" id="findPatientH4">Search for Patient:</div></h4>
+
+<form method="post" action="/findPatient">
+    <input  type="radio" name="searchForPatient" id="searchForPatientPID" class="searchForPatient" value="pid">
+    <label for="searchForPatientPID">Search by PID</label><br>
+    <input type="radio" name="searchForPatient" id="searchForPatientName" class="searchForPatient" value="name">
+    <label for="searchForPatientName">Search by Name</label><br><br>
+
+    <label for="searchFor">Search: </label>
+    <input type="text" name="searchFor" id="searchFor">
+
+    <a ><input type="submit" value="Search"></a>
+</form>
+<h1 id="Title"></h1>
+<p>FHIR Lookup Patient Name</p>
+<form method="post" action="/PtInstructions">
+    <input type="text" name="ptFirstName" id="ptFirstName">
+    <input type="button" onclick="getPt()" name="submit" id="submit" value="Search">
+</form>
+<p id="JSON"></p>
+<script>
+    function getPt(){
+        var ptName = document.getElementById("ptFirstName").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            if (this.readyState === 4 && this.status === 200){
+                var object = this.responseText;
+                var jsObject = JSON.parse(object)
+                console.log(jsObject);
+
+
+
+                var patientName = jsObject.name;
+
+
+                document.getElementById("JSON").innerHTML = patientName;
+
+
+
+
+            }
+            else if (this.readyState===4 && this.status !== 200){
+                document.getElementById("Title").innerHTML = "Bad Request";
+            }
+        };
+        xhttp.open("GET", "http://fhir.hl7fundamentals.org/r4/Patient?name="+ptName+"&_format=json", true);
+        xhttp.send();
+    }
+</script>
+
+
+{% endblock %}

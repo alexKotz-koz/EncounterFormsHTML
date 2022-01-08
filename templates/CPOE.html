@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %} CPOE A&P {% endblock %}
+
+
+{% block content %}
+<h2>{{ patient.First }} {{ patient.Last }}</h2>
+
+<button id="viewAllProtocols"><div class="viewAllProtocols">View All Protocols</div></button>
+<button id="assessmentsDue"><div class="assessmentsDue">Assessments Due</div></button>
+
+
+<button id="addProblem"><a href="/AddProblem/{{ pid }}"><div class="addProblem">Add Problem</div></a></button>
+<button id="problemList"><div class="problemList">Problem List</div></button>
+
+<form name="a&P1" method="post" action="/CPOE/{{ pid }}">
+    <h2><div class="assessment1Title">Assessment 1: </div></h2>
+    <select name="problemDD1">
+        <option name="default" id="default"> </option>
+        {% for prob in patientProblems %}
+            <option name="problem1" id="problem1">{{ prob.DxName }}</option>
+        {% endfor %}
+    </select>
+	<div class="toolbar">
+		<a href="javascript:void(0)" onclick="format('bold')"><span class="fa fa-bold fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="format('italic')"><span class="fa fa-italic fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="format('insertunorderedlist')"><span class="fa fa-list fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="setUrl()"><span class="fa fa-link fa-fw"></span></a>
+		<span><input id="txtFormatUrl" placeholder="url" class="form-control"></span>
+    </div>
+
+    <div id="sampleeditor" name="sampleeditor"><textarea id="textarea1" name="textarea1" class="textarea"></textarea></div>
+	<script>
+		window.addEventListener('load', function(){
+			document.getElementById('sampleeditor').setAttribute('contenteditable', 'true');
+			document.getElementById('sampleeditor2').setAttribute('contenteditable', 'true');
+        });
+
+		function format(command, value) {
+			document.execCommand(command, false, value);
+		}
+
+		function setUrl() {
+			var url = document.getElementById('txtFormatUrl').value;
+			var sText = document.getSelection();
+			document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank">' + sText + '</a>');
+			document.getElementById('txtFormatUrl').value = '';
+		}
+	</script>
+    <input type="submit" name="commitA&P" value="Commit Assessment">
+</form>
+
+<form name="a&P2" method="post" action="/CPOE/{{ pid }}" >
+    <h2><div class="assessment2Title">Assessment 2: </div></h2>
+    <select name="problemDD2">
+        <option name="default" id="default2"> </option>
+        {% for prob in patientProblems %}
+            <option id="problem2" >{{ prob.DxName }}</option>
+        {% endfor %}
+    </select>
+    <div class="toolbar">
+		<a href="javascript:void(0)" onclick="format('bold')"><span class="fa fa-bold fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="format('italic')"><span class="fa fa-italic fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="format('insertunorderedlist')"><span class="fa fa-list fa-fw"></span></a>
+		<a href="javascript:void(0)" onclick="setUrl()"><span class="fa fa-link fa-fw"></span></a>
+		<span><input id="txtFormatUrl2" placeholder="url" class="form-control"></span>
+    </div>
+
+    <div id="sampleeditor2" name="sampleeditor2"><textarea id="textarea2" name="textarea2" class="textarea"></textarea></div>
+	<script>
+		window.addEventListener('load', function(){
+			document.getElementById('sampleeditor').setAttribute('contenteditable', 'true');
+			document.getElementById('sampleeditor2').setAttribute('contenteditable', 'true');
+        });
+
+		function format(command, value) {
+			document.execCommand(command, false, value);
+		}
+
+		function setUrl() {
+			var url = document.getElementById('txtFormatUrl').value;
+			var sText = document.getSelection();
+			document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank">' + sText + '</a>');
+			document.getElementById('txtFormatUrl').value = '';
+		}
+	</script>
+    <input type="submit" name="commitA&P2" value="Commit Assessment">
+
+
+</form>
+
+<!-- For Expanded Text Areas -->
+<script>
+    let el = document.querySelector(".input-wrap .input");
+    let widthMachine = document.querySelector(".input-wrap .width-machine");
+    el.addEventListener("keyup", () => {
+        widthMachine.innerHTML = el.value;
+    });
+    // Dealing with Textarea Height
+    function calcHeight(value) {
+        let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+        // min-height + lines x line-height + padding + border
+        let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
+        return newHeight;
+    }
+    let textarea = document.querySelector(".resize-ta");
+    textarea.addEventListener("keyup", () => {
+        textarea.style.height = calcHeight(textarea.value) + "px";// Dealing with Input width
+    });
+    </script>
+
+{% endblock %}

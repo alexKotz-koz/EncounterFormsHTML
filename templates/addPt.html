@@ -1,0 +1,39 @@
+{% extends "base2.html" %}
+
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<form action="/AddPt" method="post">
+    <label for="first">Enter First Name: </label>
+    <input name="first" id="first" type="text"><br>
+
+    <label for="last">Enter Last Name: </label>
+    <input name="last" id="last" type="text"><br>
+
+    <label for="dateOfBirth">Date of Birth: </label>
+    <input name="dateOfBirth" id="dateOfBirth" type="date"><br>
+
+    <label for="insurance">Insurance: </label>
+    <input name="insurance" id="insurance" type="text"><br>
+
+    <label for="primaryProvider">Primary Provider: </label>
+    <select name="primaryProvider" id="primaryProvider">
+        <option>Kotz</option>
+        <option>Robbiano</option>
+        <option>Burke</option>
+        <option>Rollins</option>
+    </select>
+
+
+    <label for="phone">Enter Phone Number: </label>
+    <input name="phone" id="phone" type="tel"><br>
+
+    <input name="submitLogin" type="submit" value="Submit Patient">
+
+
+</form>
+
+
+{% endblock %}
