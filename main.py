@@ -44,7 +44,6 @@ class PatientProblems(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     DxName = db.Column(db.String(25))
     DxCode = db.Column(db.String(10), nullable=True)
-    DxDescription = db.Column(db.String(80), nullable=True)
     DxOnSetDate = db.Column(db.String(10), nullable=True)
     PID = db.Column(db.Integer, db.ForeignKey('patients.id'), autoincrement=True)
 
@@ -122,8 +121,7 @@ def AddPt():
         age = currentDate_obj - dt_object
         age = str(age)
         age = age.split(" ")
-        age = floor(int(age[0])/365)
-        print(age)
+        age = floor(int(age[0]) / 365)
         age = str(age)
 
         insurance = request.form['insurance']
@@ -143,7 +141,8 @@ def AddProblem(pid):
     globalProblemList = GlobalProblemList.query.all()
     patients = Patients.query.filter_by(id=pid)
     if request.method == 'POST':
-        onSetDate = request.form['onSetDate']
+        dt_string = request.form.get('onSetDate')
+        onSetDate = dt_string
         patient = request.form['findPatient']
 
         if patient is not None:
@@ -158,8 +157,8 @@ def AddProblem(pid):
                 db.session.add(problemToAdd)
                 db.session.commit()
                 return redirect('/CPOE/' + pid)
-            else:
-                return redirect('/AddProblem/' + pid)
+        # else:
+        #    return redirect('/AddProblem/' + pid)
     return render_template('addProblem.html', globalProblemList=globalProblemList, patients=patients, pid=pid)
 
 
@@ -167,16 +166,20 @@ def AddProblem(pid):
 def AddProblemToGlobalList():
     if request.method == 'POST':
         DxCode = request.form['icd10Code']
-
+        globalProblems = GlobalProblemList.query.all()
         nameJsonObject = requests.get(
             'https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=' + DxCode)
         nameJsonObjects = nameJsonObject.json()
         textNameJson = nameJsonObjects[3]
         nameOfDx = textNameJson[0]
-
         DxName = nameOfDx[1]
+        for code in globalProblems:
+            userICDCode = code.DxCode
+            if DxCode == userICDCode:
+                return redirect('/Errors/errorAddGlobalProblem')
 
-        addGlobalProblem(DxName, DxCode)
+        db.session.add(GlobalProblemList(DxName=DxName, DxCode=DxCode))
+        db.session.commit()
         return redirect('/findPatient')
     return render_template('addProblemGlobal.html', GlobalProblemList=GlobalProblemList)
 
@@ -194,20 +197,33 @@ def init():
 
 @app.route('/base', methods=['GET', 'POST'])
 def base(pid):
-    render_template('home.html')
+    patient = Patients.query.filter_by(id=pid)
+    render_template('home.html', patient=patient)
 
 
 @app.route('/findPatient', methods=['GET', 'POST'])
 def findPatient():
+    patients = Patients.query.all()
     if request.method == 'POST':
         searchForRadio = request.form['searchForPatient']
         if searchForRadio == "pid":
             pid = request.form['searchFor']
             patientPID = Patients.query.filter_by(id=pid).first()
+            for pt in patients:
+                if str(pt.id) == pid:
+                    break
+                else:
+                    return redirect('/Errors/errorAddGlobalProblem')
+
             return redirect('/home/' + str(patientPID.id))
         elif searchForRadio == "name":
             name = request.form['searchFor']
             patientName = Patients.query.filter_by(First=name).first()
+            for pt in patients:
+                if str(pt.First) == name:
+                    break
+                else:
+                    return redirect('/Errors/errorAddGlobalProblem')
             pid = patientName.id
             return redirect('/home/' + str(pid))
         else:
@@ -223,13 +239,43 @@ def home(pid):
     return render_template('home.html', patient=patient)
 
 
-@app.route('/ChartSummary/<pid>', methods=['POST', 'GET'])
-def ChartSummary(pid):
+@app.route('/DeleteProblem/<probId>/<pid>')
+def DeleteProblem(probId, pid):
+    id = PatientProblems.query.filter_by(id=probId).first()
+    print(id)
+    db.session.delete(id)
+    db.session.commit()
+    return redirect('/ChartSummary/' + pid)
+
+
+@app.route('/ChartSummary/<pid>', defaults={'dxDDCode': None}, methods=['POST', 'GET'])
+@app.route('/ChartSummary/<pid>/<dxDDCode>', methods=['POST', 'GET'])
+def ChartSummary(pid, dxDDCode):
     if pid == '':
         return redirect('/findPatient')
     patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.filter_by(PID=pid)
-    return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems)
+    patientAssessments = PatientAssessments.query.filter_by(PID=pid)
+
+    if request.method == 'POST':
+        print('post')
+        DxDD = request.form['DxDD']
+        print(DxDD)
+
+        if request.form['Submit'] == 'findDx':
+            print('here')
+            dxDD = request.form['DxDD']
+            dxDDCode = dxDD.split(' | ')
+            dxDDCode = dxDDCode[0]
+            print(dxDD)
+            print(dxDDCode)
+
+            return redirect('/ChartSummary/' + pid + '/' + dxDDCode)
+        elif request.form['DxDD'] == 'Add Problem':
+            return redirect('/AddProblem/' + pid)
+
+    return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems,
+                           patientAssessments=patientAssessments, dxDDCode=dxDDCode)
 
 
 @app.route('/CPOE/<pid>', methods=['POST', 'GET'])
@@ -239,9 +285,12 @@ def CPOE(pid):
     patientAssessments = PatientAssessments.query.filter_by(PID=pid).first()
 
     if request.method == 'POST':
-        if request.form.get('commitA&P1'):
+        print('post')
+        if request.form.get('commitA&P'):
+            print("commit1")
             problem1 = request.form['problemDD1']
-            assessment1 = request.form['assessment1']
+            assessment1 = request.form['textarea1']
+            print(assessment1)
             assessment1Add = PatientAssessments(DxName=problem1, Assessment=assessment1, AssessmentDate=str(today),
                                                 PID=pid)
             db.session.add(assessment1Add)
@@ -250,7 +299,7 @@ def CPOE(pid):
 
         if request.form.get('commitA&P2'):
             problem2 = request.form['problemDD2']
-            assessment2 = request.form['assessment2']
+            assessment2 = request.form['textarea2']
             assessment2Add = PatientAssessments(DxName=problem2, Assessment=assessment2, AssessmentDate=str(today),
                                                 PID=pid)
             db.session.add(assessment2Add)
@@ -274,8 +323,11 @@ def HPI():
     return render_template('HPI.html')
 
 
-@app.route('/PtInstructions')
+@app.route('/PtInstructions', methods=['GET','POST'])
 def PtInstructions():
+    if request.method == 'POST':
+        print("here")
+
     return render_template('ptInstructions.html')
 
 
@@ -292,6 +344,11 @@ def Immunizations():
 @app.route('/PMHPSH')
 def PMHPSH():
     return render_template('PMH-PSH.html')
+
+
+@app.route('/Errors/errorAddGlobalProblem')
+def errorAddGlobalProblem():
+    return render_template('Errors/errorAddGlobalProblem.html')
 
 
 if __name__ == '__main__':
