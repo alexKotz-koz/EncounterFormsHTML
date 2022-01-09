@@ -136,27 +136,23 @@ def AddPt():
 
 @app.route('/AddProblem/<pid>', methods=['POST', 'GET'])
 def AddProblem(pid):
-    # Pid = Patients.query.filter_by(id=id).first()
-
     globalProblemList = GlobalProblemList.query.all()
     patients = Patients.query.filter_by(id=pid)
     if request.method == 'POST':
         dt_string = request.form.get('onSetDate')
         onSetDate = dt_string
-        patient = request.form['findPatient']
 
-        if patient is not None:
-            dxName = request.form['selectProblem']
-            globalProblemListDxName = GlobalProblemList.query.filter_by(DxName=dxName).first()
-            globalProblemListDxCode = GlobalProblemList.query.filter_by(DxName=dxName).first()
-            if globalProblemListDxName.DxName == dxName:
-                problemToAdd = PatientProblems(DxName=globalProblemListDxName.DxName,
-                                               DxCode=globalProblemListDxCode.DxCode,
-                                               DxOnSetDate=onSetDate,
-                                               PID=pid)
-                db.session.add(problemToAdd)
-                db.session.commit()
-                return redirect('/CPOE/' + pid)
+        dxName = request.form['selectProblem']
+        globalProblemListDxName = GlobalProblemList.query.filter_by(DxName=dxName).first()
+        globalProblemListDxCode = GlobalProblemList.query.filter_by(DxName=dxName).first()
+        if globalProblemListDxName.DxName == dxName:
+            problemToAdd = PatientProblems(DxName=globalProblemListDxName.DxName,
+                                           DxCode=globalProblemListDxCode.DxCode,
+                                           DxOnSetDate=onSetDate,
+                                           PID=pid)
+            db.session.add(problemToAdd)
+            db.session.commit()
+            return redirect('/CPOE/' + pid)
         # else:
         #    return redirect('/AddProblem/' + pid)
     return render_template('addProblem.html', globalProblemList=globalProblemList, patients=patients, pid=pid)
@@ -251,8 +247,6 @@ def DeleteProblem(probId, pid):
 @app.route('/ChartSummary/<pid>', defaults={'dxDDCode': None}, methods=['POST', 'GET'])
 @app.route('/ChartSummary/<pid>/<dxDDCode>', methods=['POST', 'GET'])
 def ChartSummary(pid, dxDDCode):
-    if pid == '':
-        return redirect('/findPatient')
     patient = Patients.query.filter_by(id=pid)
     patientProblems = PatientProblems.query.filter_by(PID=pid)
     patientAssessments = PatientAssessments.query.filter_by(PID=pid)
@@ -269,9 +263,8 @@ def ChartSummary(pid, dxDDCode):
             dxDDCode = dxDDCode[0]
             print(dxDD)
             print(dxDDCode)
-
             return redirect('/ChartSummary/' + pid + '/' + dxDDCode)
-        elif request.form['DxDD'] == 'Add Problem':
+        elif request.form['Submit'] == 'Add Problem':
             return redirect('/AddProblem/' + pid)
 
     return render_template('chartSummary.html', patient=patient, patientProblems=patientProblems,
@@ -344,6 +337,12 @@ def Immunizations():
 @app.route('/PMHPSH')
 def PMHPSH():
     return render_template('PMH-PSH.html')
+
+@app.route('/FHIRExtract', methods=['GET','POST','PUSH'])
+def FHIRExtract():
+
+
+    return render_template('fhirExtract.html')
 
 
 @app.route('/Errors/errorAddGlobalProblem')

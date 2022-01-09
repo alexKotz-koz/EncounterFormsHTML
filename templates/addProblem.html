@@ -2,13 +2,27 @@
 {% block title %} Add Problem {% endblock %}
 
 {% block content %}
+
+{% for pt in patient %}
+<div class="banner" >
+<table class="banner" id="bannerTable">
+        <tr>
+            <th colspan="2.5"><div class="bannerName"> {{ pt.First }} </div></th>
+            <th colspan="2.5"><div class="bannerName"> {{ pt.Last }} </div></th>
+
+        </tr>
+        <tr>
+            <td> Primary Provider: {{ pt.PrimaryProvider }} </td>
+            <td> Primary Insurance: {{ pt.Insurance }} </td>
+            <td> Primary Phone: {{ pt.Phone }} </td>
+            <td> Patient ID: {{ pt.id }} </td>
+            <td id="dateOfBirth"> Patient Date of Birth:{{ pt.DateOfBirth }} </td>
+        </tr>
+    </table> <br> <br>
+</div>
+{% endfor %}
 <form method="post" action="/AddProblem/{{ pid }}">
-    <label for="findPatient">Select Patient: </label>
-    <select name="findPatient"  id="findPatient">
-        {% for pt in patients %}
-            <option id="patient">{{ pt.First }} {{ pt.Last }} {{ pt.id }}</option>
-        {% endfor %}
-    </select>
+
     <label for="selectProblem">Select Dx: </label>
     <select name="selectProblem" id="selectProblem">
         {% for problem in globalProblemList %}

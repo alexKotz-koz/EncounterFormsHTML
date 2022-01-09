@@ -1,0 +1,74 @@
+{% extends "base2.html" %}
+{% block title %} FHIR Extract {% endblock %}
+{% block content %}
+<h1 id="Title"></h1>
+<form method="post" action="/FHIRExtract">
+    <input type="text" name="ptFirstName" id="ptFirstName">
+    <input type="button" onclick="getPt()" name="submit" id="submit" value="Search">
+</form>
+
+<div class="banner" >
+<table id="bannerTable">
+        <tr>
+            <th colspan="2.5" id="firstName"><div class="bannerName"></div></th>
+            <th colspan="2.5" id="lastName"><div class="bannerName"></div></th>
+
+        </tr>
+        <tr>
+            <td id="gender"></td>
+            <td id="phoneNumber"></td>
+            <td id="pid"></td>
+            <td id="dateOfBirth"></td>
+        </tr>
+    </table> <br> <br>
+</div>
+
+
+<script>
+    function getPt(){
+        var ptName = document.getElementById("ptFirstName").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            if (this.readyState === 4 && this.status === 200){
+                var object = this.responseText;
+                var jsObject = JSON.parse(object);
+                var entry = jsObject;
+
+                var familyName = jsObject.entry[0].resource.name[0].family;
+                var firstName = jsObject.entry[0].resource.name[0].given[0];
+                var gender = jsObject.entry[0].resource.gender;
+                var phoneNumber = jsObject.entry[0].resource.telecom[0].value;
+                var pid = jsObject.entry[0].resource.id;
+                var dateOfBirth = jsObject.entry[0].resource.birthDate;
+
+
+                document.getElementById("lastName").innerHTML = 'Last Name: ' + familyName;
+                document.getElementById("firstName").innerHTML = 'First Name: ' + firstName;
+                document.getElementById("gender").innerHTML = 'Gender: ' + gender;
+                document.getElementById("phoneNumber").innerText = 'Patient Phone: ' + phoneNumber;
+                document.getElementById("pid").innerHTML = 'PID: ' + pid;
+                document.getElementById("dateOfBirth").innerHTML = 'Date of Birth: ' + dateOfBirth;
+                console.log("GENDER: " + gender)
+                console.log("NAME: " + familyName)
+                console.log("FIRST NAME: " + firstName)
+                console.log("PHONE: " + phoneNumber)
+                //console.log("PID: " + pid)
+                //console.log("DOB: " + dateOfBirth)
+
+                console.log(entry)
+            }
+            else if (this.readyState===4 && this.status !== 200){
+                document.getElementById("Title").innerHTML = "Bad Request";
+            }
+        };
+        //xhttp.open("GET", "http://fhir.hl7fundamentals.org/r4/Patient?name="+ptName+"&_format=json", true);
+        xhttp.open("GET", "http://fhir.hl7fundamentals.org/r4/Patient?name="+ptName, true);
+        xhttp.send();
+    }
+</script>
+
+
+
+
+
+{% endblock %}

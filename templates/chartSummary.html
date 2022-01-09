@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "patientBanner.html" %}
 {% block title %} Chart Summary {% endblock %}
 
 {% block content %}
 
-    {% for pt in patient %}
+{% for pt in patient %}
 <div class="banner" >
 <table id="bannerTable">
         <tr>
@@ -40,12 +40,9 @@
     </tr>
     {% endfor %}
 </table></div>
-<form action="/ChartSummary/{{ pt.id }}" method='POST'>
-    <input type="submit" name="Submit" value="Add Problem">
-</form>
+<button id="addProblem" name="Submit" value="Add Problem"><a href="/AddProblem/{{ pt.id }}"><div class="addProblem">Add Problem</div></a></button>
 <br>
 <form action="/ChartSummary/{{ pt.id }}/{{ dxDDCode }}" method='POST'>
-
     <label> Choose Dx:
             <select id="DxDD" name="DxDD">
                {% for aP in patientAssessments %}
@@ -66,29 +63,12 @@
         <td class="chartSummaryAssessmentsTableHeaders">Assessment Date</td>
         </tr>
   {% for aP in patientAssessments %}
-
-
-
-
     <tr>
         <td class="chartSummaryAssessmentsTableTd">{{ aP.DxName }}</td>
         <td class="chartSummaryAssessmentsTableTd">{{ aP.Assessment }}</td>
         <td class="chartSummaryAssessmentsTableTd">{{ aP.AssessmentDate }}</td>
     </tr>
-
-
-
-
     </table></div>
-
      {% endfor %}
-
-
-
-
 {% endfor %}
-
-
-
-
 {% endblock %}
